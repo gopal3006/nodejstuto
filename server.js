@@ -15,6 +15,8 @@ var routes = {};
 routes.homes = require('./route/homes.js');
 // Contatus Us Form 
 routes.contact = require('./route/contact.js');
+// Users APIs
+routes.users = require('./route/users.js');
 
 app.get('/', function (req, res) {
 	res.redirect('/dashboard');
@@ -61,6 +63,10 @@ app.all('*', function (req, res, next) {
 app.get('/dashboard', routes.homes.dashboard);
 // ContactUs From 
 app.post('/api/v1/constactus/save', routes.contact.contactSave);
+
+// Users APIs Lists 
+app.post('/api/v1/users/save', routes.users.userSave);
+app.get('/api/v1/users/list', routes.users.userList);
 
 app.use(function (req, res, next) {
 	var token = req.headers['x-access-token'];
