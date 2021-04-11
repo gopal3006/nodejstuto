@@ -67,12 +67,13 @@ app.post('/api/v1/constactus/save', routes.contact.contactSave);
 // Users APIs Lists 
 app.post('/api/v1/users/save', routes.users.userSave);
 app.get('/api/v1/users/list', routes.users.userList);
+app.post('/api/v1/users/isemail', routes.users.isEmailId);
 
 app.use(function (req, res, next) {
 	var token = req.headers['x-access-token'];
 	console.log('token:', req.originalUrl);
 	console.log("req.originalUrl>>>>>>>>>",req.originalUrl);
-	if ((req.originalUrl != '/api/v1/constactus/save') && (req.originalUrl != '/dashboard')) {
+	if ((req.originalUrl != '/api/v1/constactus/save') && (req.originalUrl != '/dashboard') && (req.originalUrl != '/api/v1/users/isemail')) {
 		if (token) {
 			jwt.verify(token, app.get('superSecret'), function (err, decoded) {
 				if (err) {

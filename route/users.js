@@ -86,6 +86,53 @@ exports.deleteUser = function(req, res) {
 
 }
 
+exports.isEmailId = function(req, res) {
+    User.find( {email:req.body.email}, function (err, listUser) {
+	
+    if (err) {
+        console.log("err>>>>>>>>>>>>>>>>",err);
+        return res.status(401).send({'err' : 'There is something wrong...'});
+    }
+
+    if (listUser == undefined) {		
+        return res.status(404).send({'err' : 'User Email not found'});
+    }
+
+            var template = {
+                __v: true,
+                _id: function(src){
+                    return encodeId(src._id);
+                },
+                created_at: function(src){
+                            return src.created_at.toDateString();
+                        },
+                modified_at: function(src){
+                    return src.modified_at.toDateString();
+                },  
+                first_name: false,
+                last_name: true,
+                email: true,
+                password: true,
+                phoneno: true,
+                    list: function(src){
+                        return src.listUser;
+                    }, 
+        
+            }; 
+        
+        var copy = cloneObjectByTemplate(listUser, template);	
+        console.log("copy>>>>>>>>>>>",copy);
+        if(copy !=''){
+            console.log("I M IF>>>>>");
+            return res.status(200).send({ data: copy });
+        }else{
+            console.log("I M ELSE");
+            return res.status(404).send({'err' : 'User Email not found'});
+        }
+        
+    });
+}
+
 // Some Common finction 
 function encodeId(id) {
     var firsthalf = id.toString().substring(0,12);
