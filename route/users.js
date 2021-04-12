@@ -36,8 +36,25 @@ exports.userSave = function (req, res) {
     });
 };
 
-exports.userUpdate = function (req, res) {
+exports.userUpdate = async function (req, res) {
+    const { _id, first_name, last_name, email, phoneno } = req.body;
+    console.log("REQUEST>>>>>>>>>>>>",req.body);
+    try {
+        const checkData = await User.findOne({ _id });
+        if (!checkData) {
+            return res.send({status: false,  msg: 'Record not exists with this.' })
+        }
 
+        checkData.first_name = first_name;
+        checkData.last_name = last_name;
+        checkData.email = email;
+        checkData.phoneno = phoneno;
+        checkData.save();
+        return res.status(200).send({ confirm : 'User has been updated successfully.' });
+    } catch (error) {
+        console.log("--error", error)
+        return res.status(404).send({'err' : error});
+    } 
 }
 
 exports.userList = function (req, res) {
@@ -83,7 +100,62 @@ exports.userList = function (req, res) {
 
 
 exports.deleteUser = function(req, res) {
+    console.log("I M HERE>>>>>>");
+    console.log("req.body>>>>>>>>>>>>", req.body);
+    //return false;
+    var userId = req.body.userId || '';
+    User.findOneAndDelete({ _id: userId }, function (err) {
+        if (err) {
+            return res.status(404).send({'err' : err});
+        } else {
+            return res.status(200).send({ confirm : 'User has been deleted successfully.' });
+        }
+    });
+}
 
+exports.detailUser = async function(req, res) {
+    console.log("I M HERE>>>>>>");
+    console.log("req.body>>>>>>>>>>>>", req.body);
+    //return false;
+    var userId = req.body._id || '';
+    console.log("userId>>>>>>>>",userId);
+    User.findOne({"_id":userId }, function (err, userDetails) {
+	
+        if (err) {
+            console.log("err>>>>>>>>>>>>>>>>",err);
+            return res.status(401).send({'err' : 'There is something wrong...'});
+        }
+    
+        if (userDetails == undefined) {		
+            return res.status(404).send({'err' : 'User Detail not found'});
+        }
+    
+                var template = {
+                    __v: true,
+                    _id: function(src){
+                        return encodeId(src._id);
+                    },
+                    created_at: function(src){
+                                return src.created_at.toDateString();
+                            },
+                    modified_at: function(src){
+                        return src.modified_at.toDateString();
+                    },  
+                    first_name: false,
+                    last_name: true,
+                    email: true,
+                    password: true,
+                    phoneno: true,
+                        list: function(src){
+                            return src.userDetails;
+                        }, 
+            
+                }; 
+            
+            var copy = cloneObjectByTemplate(userDetails, template);
+            console.log("copy>>>>>>>>>>>",copy);	
+            return res.status(200).send({ data: copy });
+        });
 }
 
 exports.isEmailId = function(req, res) {
