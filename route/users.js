@@ -124,7 +124,7 @@ exports.isEmailId = function(req, res) {
         console.log("copy>>>>>>>>>>>",copy);
         if(copy !=''){
             console.log("I M IF>>>>>");
-            return res.status(200).send({ data: copy });
+            return res.status(200).send({'success' : 'User Email Already Exist'});
         }else{
             console.log("I M ELSE");
             return res.status(404).send({'err' : 'User Email not found'});
