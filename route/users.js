@@ -6,6 +6,9 @@ var fs = require('fs');
 var Gmailer = require("gmail-sender");
 var gm = require('gm');
 const async = require("async");
+const multer = require('multer');
+var cors = require('cors');
+var fileExtension = require('file-extension')
 
 exports.userSave = function (req, res) {
     console.log("I M HERE>>>>>>");
@@ -21,12 +24,18 @@ exports.userSave = function (req, res) {
     if (first_name == '' || last_name == '') {
         return res.status(404).send({'err' : 'All inputs are required.'});
     }
+
+    const file = req.file;
+    console.log("File>>>>>>>>>>",file);
+    console.log("FIleName>>>>>>",file.filename);
+
     var newUser = new User();
     newUser.first_name = first_name;
     newUser.last_name = last_name;
     newUser.email = email;
     newUser.password = password;
     newUser.phoneno = phoneno;
+    newUser.image = file.filename;
     newUser.save(function (err, reply) {
         console.log("AFTER SAVE>>>>>>>>>>");
         if (err) {
@@ -45,10 +54,15 @@ exports.userUpdate = async function (req, res) {
             return res.send({status: false,  msg: 'Record not exists with this.' })
         }
 
+        const file = req.file;
+        console.log("File>>>>>>>>>>",file);
+        console.log("FIleName>>>>>>",file.filename);
+
         checkData.first_name = first_name;
         checkData.last_name = last_name;
         checkData.email = email;
         checkData.phoneno = phoneno;
+        checkData.image = file.filename;
         checkData.save();
         return res.status(200).send({ confirm : 'User has been updated successfully.' });
     } catch (error) {

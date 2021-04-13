@@ -11,6 +11,41 @@ var config = require('./helpers/config.js');
 var jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+const multer = require('multer');
+var cors = require('cors');
+var fileExtension = require('file-extension')
+
+//FILE UPLOAD USING MULTER
+// Configure Storage
+var storage = multer.diskStorage({
+
+    // Setting directory on disk to save uploaded files
+    destination: function (req, file, cb) {
+        cb(null, 'public/userImages')
+    },
+
+    // Setting name of file saved
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + '.' + fileExtension(file.originalname))
+    }
+})
+
+var upload = multer({
+    storage: storage,
+    limits: {
+        // Setting Image Size Limit to 2MBs
+        fileSize: 2000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            //Error 
+            cb(new Error('Please upload JPG and PNG images only!'))
+        }
+        //Success 
+        cb(undefined, true)
+    }
+})
+
 var routes = {};
 routes.homes = require('./route/homes.js');
 // Contatus Us Form 
@@ -65,11 +100,11 @@ app.get('/dashboard', routes.homes.dashboard);
 app.post('/api/v1/constactus/save', routes.contact.contactSave);
 
 // Users APIs Lists 
-app.post('/api/v1/users/save', routes.users.userSave);
+app.post('/api/v1/users/save', upload.single('uploadedImage'), routes.users.userSave);
 app.get('/api/v1/users/list', routes.users.userList);
 app.post('/api/v1/users/isemail', routes.users.isEmailId);
 app.post('/api/v1/users/delete', routes.users.deleteUser);
-app.post('/api/v1/users/update', routes.users.userUpdate);
+app.post('/api/v1/users/update', upload.single('uploadedImage'), routes.users.userUpdate);
 app.post('/api/v1/users/detail', routes.users.detailUser);
 
 app.use(function (req, res, next) {
