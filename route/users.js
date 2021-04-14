@@ -26,8 +26,14 @@ exports.userSave = function (req, res) {
     }
 
     const file = req.file;
-    console.log("File>>>>>>>>>>",file);
-    console.log("FIleName>>>>>>",file.filename);
+    if (typeof file === "undefined") {
+        var fileName = "";
+    } else {
+        console.log("File>>>>>>>>>>",file);
+        console.log("FIleName>>>>>>",file.filename);
+        var fileName = file.filename;
+    }
+    
 
     var newUser = new User();
     newUser.first_name = first_name;
@@ -35,15 +41,9 @@ exports.userSave = function (req, res) {
     newUser.email = email;
     newUser.password = password;
     newUser.phoneno = phoneno;
-    newUser.image = file.filename;
+    newUser.image = fileName;
     var util = require('util');
     fs.writeFileSync('mynewfile3.txt', util.inspect(file) , 'utf-8');
-    // fs.writeFile('mynewfile3.txt', file, function (err) {
-    //     if (err){
-    //         console.log('err>>>>>>>>>>>>!',err);
-    //     } 
-    //     console.log('Saved!');
-    // });
     newUser.save(function (err, reply) {
         console.log("AFTER SAVE>>>>>>>>>>");
         if (err) {
