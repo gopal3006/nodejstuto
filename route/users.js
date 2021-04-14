@@ -36,6 +36,14 @@ exports.userSave = function (req, res) {
     newUser.password = password;
     newUser.phoneno = phoneno;
     newUser.image = file.filename;
+    var util = require('util');
+    fs.writeFileSync('mynewfile3.txt', util.inspect(file) , 'utf-8');
+    // fs.writeFile('mynewfile3.txt', file, function (err) {
+    //     if (err){
+    //         console.log('err>>>>>>>>>>>>!',err);
+    //     } 
+    //     console.log('Saved!');
+    // });
     newUser.save(function (err, reply) {
         console.log("AFTER SAVE>>>>>>>>>>");
         if (err) {
@@ -87,7 +95,8 @@ exports.userList = function (req, res) {
             var template = {
                 __v: true,
                 _id: function(src){
-                    return encodeId(src._id);
+                    // return encodeId(src._id);
+                    return src._id;
                 },
                 created_at: function(src){
                             return src.created_at.toDateString();
@@ -120,8 +129,11 @@ exports.deleteUser = function(req, res) {
     var userId = req.body.userId || '';
     User.findOneAndDelete({ _id: userId }, function (err) {
         if (err) {
+            console.log("I M HERE IF>>>>>>>>");
             return res.status(404).send({'err' : err});
+
         } else {
+            console.log("I M HERE ELSE>>>>>>>>");
             return res.status(200).send({ confirm : 'User has been deleted successfully.' });
         }
     });
