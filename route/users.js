@@ -59,18 +59,23 @@ exports.userUpdate = async function (req, res) {
     try {
         const checkData = await User.findOne({ _id });
         if (!checkData) {
-            return res.send({status: false,  msg: 'Record not exists with this.' })
+            return res.status(404).send({ confirm : 'Record not exists with this.' });
         }
-
+        console.log("checkData>>>>>>>",checkData);
         const file = req.file;
-        console.log("File>>>>>>>>>>",file);
-        console.log("FIleName>>>>>>",file.filename);
+        if (typeof file === "undefined") {
+            var fileName = checkData.image;
+        } else {
+            console.log("File>>>>>>>>>>",file);
+            console.log("FIleName>>>>>>",file.filename);
+            var fileName = file.filename;
+        }
 
         checkData.first_name = first_name;
         checkData.last_name = last_name;
         checkData.email = email;
         checkData.phoneno = phoneno;
-        checkData.image = file.filename;
+        checkData.image = fileName;
         checkData.save();
         return res.status(200).send({ confirm : 'User has been updated successfully.' });
     } catch (error) {
@@ -173,6 +178,7 @@ exports.detailUser = async function(req, res) {
                     email: true,
                     password: true,
                     phoneno: true,
+                    image: true,
                         list: function(src){
                             return src.userDetails;
                         }, 
