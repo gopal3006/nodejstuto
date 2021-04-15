@@ -109,6 +109,7 @@ exports.userList = function (req, res) {
                 email: true,
                 password: true,
                 phoneno: true,
+                image: true,
                     list: function(src){
                         return src.listUser;
                     }, 
