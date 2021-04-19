@@ -1,10 +1,1 @@
-{
-  fieldname: 'uploadedImage',
-  originalname: 'savwe.png',
-  encoding: '7bit',
-  mimetype: 'image/png',
-  destination: 'public/userImages',
-  filename: 'uploadedImage-1618337993220.png',
-  path: 'public\\userImages\\uploadedImage-1618337993220.png',
-  size: 17418
-}
+undefined

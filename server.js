@@ -106,6 +106,7 @@ app.post('/api/v1/users/isemail', routes.users.isEmailId);
 app.post('/api/v1/users/delete', routes.users.deleteUser);
 app.post('/api/v1/users/update', upload.single('uploadedImage'), routes.users.userUpdate);
 app.post('/api/v1/users/detail', routes.users.detailUser);
+app.post('/api/v1/users/uploadImage', routes.users.uploadImage);
 
 app.use(function (req, res, next) {
 	var token = req.headers['x-access-token'];

@@ -8,7 +8,9 @@ var gm = require('gm');
 const async = require("async");
 const multer = require('multer');
 var cors = require('cors');
-var fileExtension = require('file-extension')
+var fileExtension = require('file-extension');
+const bodyParser = require('body-parser');
+const mime = require('mime');
 
 exports.userSave = function (req, res) {
     console.log("I M HERE>>>>>>");
@@ -33,15 +35,46 @@ exports.userSave = function (req, res) {
         console.log("FIleName>>>>>>",file.filename);
         var fileName = file.filename;
     }
+    // Save base64ImageUrl
+    if (req.body.base64image == ""){
+        var base64ImageName = "";
+    } else {
+        var matches = req.body.base64image.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
+        response = {};
+        
+        if (matches.length !== 3) {
+            return res.status(404).send({'err' : 'Invalid input string.'});
+        }
+        
+        response.type = matches[1];
+        response.data = new Buffer.from(matches[2], 'base64');
+        //Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from()
+        let decodedImg = response;
+        console.log("decodedImg>>>>>>>>",decodedImg);
+        let imageBuffer = decodedImg.data;
+        console.log("imageBuffer>>>>>",imageBuffer);
+        let type = decodedImg.type;
+        console.log("type>>>>>>>>>",type);
+        let extension = mime.getExtension(type);
+        let base64ImageName = "image" + '-' + Date.now() + '.' + extension;
+        console.log("base64ImageName>>>>>>>>",base64ImageName);
+        console.log("fileName>>>>>>>>>",fileName);
+        try {
+        fs.writeFileSync("./public/userImages/" + base64ImageName, imageBuffer, 'utf8');
+            //return res.send({"status":"success"});
+        } catch (e) {
+            console.log("e>>>>>>>>>>>>>>>",e);
+            //next(e);
+        }
+    }
     
-
     var newUser = new User();
     newUser.first_name = first_name;
     newUser.last_name = last_name;
     newUser.email = email;
     newUser.password = password;
     newUser.phoneno = phoneno;
-    newUser.image = fileName;
+    newUser.image = base64ImageName;
     var util = require('util');
     fs.writeFileSync('mynewfile3.txt', util.inspect(file) , 'utf-8');
     newUser.save(function (err, reply) {
@@ -236,6 +269,11 @@ exports.isEmailId = function(req, res) {
         }
         
     });
+}
+
+exports.uploadImage = function(req, res) {
+    console.log("req>>>>>>>>>",req.body);
+    return false;
 }
 
 // Some Common finction 
