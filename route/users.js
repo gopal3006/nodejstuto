@@ -61,29 +61,29 @@ exports.userSave = function (req, res) {
         console.log("fileName>>>>>>>>>",fileName);
         try {
         fs.writeFileSync("./public/userImages/" + base64ImageName, imageBuffer, 'utf8');
-            //return res.send({"status":"success"});
+            var newUser = new User();
+            newUser.first_name = first_name;
+            newUser.last_name = last_name;
+            newUser.email = email;
+            newUser.password = password;
+            newUser.phoneno = phoneno;
+            newUser.image = base64ImageName;
+            console.log("newUser>>>>>>>>>>",newUser);
+            //return false;
+            // var util = require('util');
+            // fs.writeFileSync('mynewfile3.txt', util.inspect(file) , 'utf-8');
+            newUser.save(function (err, reply) {
+                console.log("AFTER SAVE>>>>>>>>>>");
+                if (err) {
+                    return res.status(404).send({'err' : err});
+                }
+                return res.status(200).send({ confirm : 'User has been saved successfully.' });
+            });
         } catch (e) {
             console.log("e>>>>>>>>>>>>>>>",e);
-            //next(e);
+            return res.status(404).send({'err' : e});
         }
     }
-    
-    var newUser = new User();
-    newUser.first_name = first_name;
-    newUser.last_name = last_name;
-    newUser.email = email;
-    newUser.password = password;
-    newUser.phoneno = phoneno;
-    newUser.image = base64ImageName;
-    var util = require('util');
-    fs.writeFileSync('mynewfile3.txt', util.inspect(file) , 'utf-8');
-    newUser.save(function (err, reply) {
-        console.log("AFTER SAVE>>>>>>>>>>");
-        if (err) {
-            return res.status(404).send({'err' : err});
-        }
-        return res.status(200).send({ confirm : 'User has been saved successfully.' });
-    });
 };
 
 exports.userUpdate = async function (req, res) {
@@ -142,6 +142,8 @@ exports.userUpdate = async function (req, res) {
         checkData.email = email;
         checkData.phoneno = phoneno;
         checkData.image = base64ImageName;
+        console.log("checkData>>>>>>>",checkData);
+        return false;
         checkData.save();
         return res.status(200).send({ confirm : 'User has been updated successfully.' });
     } catch (error) {
