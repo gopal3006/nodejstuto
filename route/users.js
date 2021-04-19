@@ -104,11 +104,44 @@ exports.userUpdate = async function (req, res) {
             var fileName = file.filename;
         }
 
+        // Save base64ImageUrl
+    if (req.body.base64image == ""){
+        var base64ImageName = checkData.image;;
+    } else {
+        var matches = req.body.base64image.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
+        response = {};
+        
+        if (matches.length !== 3) {
+            return res.status(404).send({'err' : 'Invalid input string.'});
+        }
+        
+        response.type = matches[1];
+        response.data = new Buffer.from(matches[2], 'base64');
+        //Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from()
+        let decodedImg = response;
+        console.log("decodedImg>>>>>>>>",decodedImg);
+        let imageBuffer = decodedImg.data;
+        console.log("imageBuffer>>>>>",imageBuffer);
+        let type = decodedImg.type;
+        console.log("type>>>>>>>>>",type);
+        let extension = mime.getExtension(type);
+        let base64ImageName = "image" + '-' + Date.now() + '.' + extension;
+        console.log("base64ImageName>>>>>>>>",base64ImageName);
+        console.log("fileName>>>>>>>>>",fileName);
+        try {
+        fs.writeFileSync("./public/userImages/" + base64ImageName, imageBuffer, 'utf8');
+            //return res.send({"status":"success"});
+        } catch (e) {
+            console.log("e>>>>>>>>>>>>>>>",e);
+            //next(e);
+        }
+    }
+
         checkData.first_name = first_name;
         checkData.last_name = last_name;
         checkData.email = email;
         checkData.phoneno = phoneno;
-        checkData.image = fileName;
+        checkData.image = base64ImageName;
         checkData.save();
         return res.status(200).send({ confirm : 'User has been updated successfully.' });
     } catch (error) {
