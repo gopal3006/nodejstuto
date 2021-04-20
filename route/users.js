@@ -21,6 +21,7 @@ exports.userSave = function (req, res) {
     var email = req.body.email || '';
     var password = req.body.password || '';
     var phoneno = req.body.phoneno || '';
+    var dob = req.body.dob || '';
 
 
     if (first_name == '' || last_name == '') {
@@ -68,6 +69,7 @@ exports.userSave = function (req, res) {
             newUser.password = password;
             newUser.phoneno = phoneno;
             newUser.image = base64ImageName;
+            newUser.dob = dob;
             console.log("newUser>>>>>>>>>>",newUser);
             //return false;
             // var util = require('util');
@@ -246,6 +248,7 @@ exports.detailUser = async function(req, res) {
                     password: true,
                     phoneno: true,
                     image: true,
+                    dob: true,
                         list: function(src){
                             return src.userDetails;
                         }, 

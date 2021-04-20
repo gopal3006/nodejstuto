@@ -9,7 +9,8 @@ var usersSchema = mongoose.Schema({
     email           :  { type: String },
     password        :   { type: String },
     phoneno         :   { type: String },
-    image         :   { type: String },
+    image           :   { type: String },
+    dob             :   { type: Date },
 	created_at      :   { type: Date, default: Date.now },  
     modified_at     :   { type: Date, default: Date.now }
 });
