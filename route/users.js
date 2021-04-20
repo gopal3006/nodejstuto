@@ -89,7 +89,7 @@ exports.userSave = function (req, res) {
 };
 
 exports.userUpdate = async function (req, res) {
-    const { _id, first_name, last_name, email, phoneno } = req.body;
+    const { _id, first_name, last_name, email, phoneno, dob } = req.body;
     //console.log("REQUEST>>>>>>>>>>>>",req.body);
     try {
         const checkData = await User.findOne({ _id });
@@ -143,6 +143,7 @@ exports.userUpdate = async function (req, res) {
         checkData.email = email;
         checkData.phoneno = phoneno;
         checkData.image = base64ImageName;
+        checkData.dob = dob;
         console.log("checkData>>>>>>>",checkData);
         //return false;
         checkData.save();
