@@ -314,6 +314,64 @@ exports.uploadImage = function(req, res) {
     return false;
 }
 
+exports.login = function (req, res) {
+    console.log("req>>>>>>",req.body);
+    let email = req.body.email || '';
+    let password = req.body.password || '';
+    if (email == '') {
+        return res.status(404).send({'err' : 'Username Required.'});
+    }
+
+    if (password == '') {
+        return res.status(404).send({'err' : 'Password Required.'});
+    }
+
+    User.findOne({"email":email,"password":password}, function (err, userDetails) {
+
+        if (err) {
+            console.log("err>>>>>>>>>>>>>>>>",err);
+            return res.status(401).send({'err' : 'There is something wrong...'});
+        }
+    
+        if (userDetails == undefined) {		
+            //return res.status(200).send({'err' : 'User Detail not found'});
+            return res.status(200).send({ 'err' : 'User Detail not found',data: "" });
+        }
+
+        console.log("userDetails>>>>>>>>>>>",userDetails);
+        var template = {
+            __v: true,
+            _id: function(src){
+                return encodeId(src._id);
+            },
+            created_at: function(src){
+                        return src.created_at.toDateString();
+                    },
+            modified_at: function(src){
+                return src.modified_at.toDateString();
+            },  
+            first_name: false,
+            last_name: true,
+            email: true,
+            phoneno: true,
+            image: true,
+            dob: true,
+                list: function(src){
+                    return src.userDetails;
+                }, 
+    
+        }; 
+    
+        var copy = cloneObjectByTemplate(userDetails, template);
+        console.log("copy>>>>>>>>>>>",copy);	
+        return res.status(200).send({ data: copy });
+    });
+
+
+
+    return false;
+}
+
 // Some Common finction 
 function encodeId(id) {
     var firsthalf = id.toString().substring(0,12);
@@ -371,6 +429,9 @@ function cloneObjectByTemplate(obj, tpl, cloneConstructor) {
 };  
 
 
+function sendEmail(userData, emailSubject, emailBoday){
+    console.log("Email Sent");
+}
 
 
 
