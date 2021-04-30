@@ -57,6 +57,13 @@ app.get('/', function (req, res) {
 	res.redirect('/dashboard');
 });
 
+
+app.get('/varification/:userId', function (req, res) {
+		var id = req.params.userId;
+        console.log(id);
+        res.redirect('/varification');
+});
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -96,6 +103,7 @@ app.all('*', function (req, res, next) {
 
 // endpoints no AUTH
 app.get('/dashboard', routes.homes.dashboard);
+app.get('/varification', routes.homes.varification);
 // ContactUs From 
 app.post('/api/v1/constactus/save', routes.contact.contactSave);
 
@@ -113,7 +121,7 @@ app.use(function (req, res, next) {
 	var token = req.headers['x-access-token'];
 	console.log('token:', req.originalUrl);
 	console.log("req.originalUrl>>>>>>>>>",req.originalUrl);
-	if ((req.originalUrl != '/api/v1/constactus/save') && (req.originalUrl != '/dashboard') && (req.originalUrl != '/api/v1/users/isemail') && (req.originalUrl != '/api/v1/users/delete') && (req.originalUrl != '/api/v1/users/delete')) {
+	if ((req.originalUrl != '/api/v1/constactus/save') && (req.originalUrl != '/dashboard') && (req.originalUrl != '/varification') && (req.originalUrl != '/api/v1/users/isemail') && (req.originalUrl != '/api/v1/users/delete') && (req.originalUrl != '/api/v1/users/delete')) {
 		if (token) {
 			jwt.verify(token, app.get('superSecret'), function (err, decoded) {
 				if (err) {

@@ -11,3 +11,7 @@ exports.dashboard = function (req, res) {
     res.render('Homes/dashboard', {});
     
 }
+
+exports.varification = function (req, res) {
+    res.render('Homes/varification', {});  
+}

@@ -21,6 +21,7 @@
     "file-extension": "^4.0.5",
     "gm": "^1.23.0",
     "gmail-sender": "^0.1.2",
+    "handlebars": "^4.7.7",
     "i18n": "^0.8.3",
     "json": "0.0.14",
     "json2csv": "^3.7.1",

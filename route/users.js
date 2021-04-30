@@ -3,6 +3,7 @@ var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt-nodejs');
 var Base62 = require('base62');
 var fs = require('fs');
+const handlebars = require('handlebars');
 var Gmailer = require("gmail-sender");
 var gm = require('gm');
 const async = require("async");
@@ -11,11 +12,10 @@ var cors = require('cors');
 var fileExtension = require('file-extension');
 const bodyParser = require('body-parser');
 const mime = require('mime');
+const nodemailer = require("nodemailer");
+const commonFunction = require('./common_helper');
 
 exports.userSave = function (req, res) {
-    console.log("I M HERE>>>>>>");
-    console.log("req.body>>>>>>>>>>>>", req.body);
-    //return false;
     var first_name = req.body.first_name || '';
     var last_name = req.body.last_name || '';
     var email = req.body.email || '';
@@ -49,17 +49,11 @@ exports.userSave = function (req, res) {
         
         response.type = matches[1];
         response.data = new Buffer.from(matches[2], 'base64');
-        //Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from()
         let decodedImg = response;
-        console.log("decodedImg>>>>>>>>",decodedImg);
         let imageBuffer = decodedImg.data;
-        console.log("imageBuffer>>>>>",imageBuffer);
         let type = decodedImg.type;
-        console.log("type>>>>>>>>>",type);
         let extension = mime.getExtension(type);
         let base64ImageName = "image" + '-' + Date.now() + '.' + extension;
-        console.log("base64ImageName>>>>>>>>",base64ImageName);
-        console.log("fileName>>>>>>>>>",fileName);
         try {
         fs.writeFileSync("./public/userImages/" + base64ImageName, imageBuffer, 'utf8');
             var newUser = new User();
@@ -71,14 +65,15 @@ exports.userSave = function (req, res) {
             newUser.image = base64ImageName;
             newUser.dob = dob;
             console.log("newUser>>>>>>>>>>",newUser);
-            //return false;
-            // var util = require('util');
-            // fs.writeFileSync('mynewfile3.txt', util.inspect(file) , 'utf-8');
             newUser.save(function (err, reply) {
                 console.log("AFTER SAVE>>>>>>>>>>");
                 if (err) {
                     return res.status(404).send({'err' : err});
                 }
+                console.log("reply>>>>>>>>.",reply);
+                var varificationBody = "Hi "+newUser.first_name+", Please click on following link to verified your account.";
+                varificationBody +=" Link :- http://localhost:3000/varification/"+newUser.email+""
+                commonFunction.sendMail(newUser,"Account Varification",varificationBody);
                 return res.status(200).send({ confirm : 'User has been saved successfully.' });
             });
         } catch (e) {
@@ -311,11 +306,11 @@ exports.isEmailId = function(req, res) {
 
 exports.uploadImage = function(req, res) {
     console.log("req>>>>>>>>>",req.body);
+    //commonFunction.sendMail("Gopal","TESTSUBJECT","TESTBODY");
     return false;
 }
 
 exports.login = function (req, res) {
-    console.log("req>>>>>>",req.body);
     let email = req.body.email || '';
     let password = req.body.password || '';
     if (email == '') {
@@ -428,10 +423,6 @@ function cloneObjectByTemplate(obj, tpl, cloneConstructor) {
     return temp;
 };  
 
-
-function sendEmail(userData, emailSubject, emailBoday){
-    console.log("Email Sent");
-}
 
 
 
