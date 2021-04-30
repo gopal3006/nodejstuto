@@ -72,7 +72,7 @@ exports.userSave = function (req, res) {
                 }
                 console.log("reply>>>>>>>>.",reply);
                 var varificationBody = "Hi "+newUser.first_name+", Please click on following link to verified your account.";
-                varificationBody +=" Link :- https://nodejstutomean.herokuapp.com/varification/"+newUser.email+""
+                varificationBody +=" Link :- https://nodejstutomean.herokuapp.com/varification/"+reply._id+""
                 commonFunction.sendMail(newUser,"Account Varification",varificationBody);
                 return res.status(200).send({ confirm : 'User has been saved successfully.' });
             });
