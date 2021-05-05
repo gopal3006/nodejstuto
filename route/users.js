@@ -428,7 +428,7 @@ exports.forgotPassword =  async function (req, res) {
             console.log("newPassword>>>>>>>>>11",newPassword);
             console.log(">>>>>>>>>>",error);
         }
-        return res.status(200).send({ 'err' : 'Email has been with updated password.',data: copy });
+        return res.status(200).send({ 'err' : 'Email has been sent on your register email with updated password.',data: copy });
     });
 }
 
