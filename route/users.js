@@ -367,19 +367,19 @@ exports.forgotPassword =  async function (req, res) {
     console.log("req.body>>>>>>>",req.body);
     let email = req.body.email || '';
     if (email == '') {
-        return res.status(404).send({'err' : 'Email Required.'});
+        return res.status(200).send({'err' : 'Email Required.'});
     }
 
     User.findOne({"email":email}, async function (err, userDetails) {
 
         if (err) {
             console.log("err>>>>>>>>>>>>>>>>",err);
-            return res.status(401).send({'err' : 'There is something wrong...'});
+            return res.status(200).send({'err' : 'There is something wrong...', data: "" });
         }
     
         if (userDetails == undefined) {		
             //return res.status(200).send({'err' : 'User Detail not found'});
-            return res.status(200).send({ 'err' : 'User Detail not found',data: "" });
+            return res.status(200).send({ 'success' : 'Please check your email id', data: "" });
         }
         console.log("userDetails>>>>>>>>>>>",userDetails);
         var template = {
@@ -421,14 +421,17 @@ exports.forgotPassword =  async function (req, res) {
             checkData.password = newPassword;
 
             User.findOneAndUpdate(query, checkData, {upsert: true}, function(err, doc) {
-                if (err) return res.send(500, {error: err});
-                console.log(">>>>>>>>>>>Success Update");
+                if (err){
+                    return res.status(200).send({'err' : 'There is something wrong...', data: "" });
+                } else {
+                    console.log(">>>>>>>>>>>Success Update"); 
+                } 
+                
             });
         } catch(error){
-            console.log("newPassword>>>>>>>>>11",newPassword);
-            console.log(">>>>>>>>>>",error);
+            return res.status(200).send({ 'err' : 'There is something wrong. Please check your email id',data: "" });
         }
-        return res.status(200).send({ 'err' : 'Email has been sent on your register email with updated password.',data: copy });
+        return res.status(200).send({ 'success' : 'Email has been sent on your register email with updated password.',data: copy });
     });
 }
 
