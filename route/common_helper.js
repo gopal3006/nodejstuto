@@ -4,9 +4,7 @@ const async = require("async");
 const nodemailer = require("nodemailer");
 
 exports.sendMail = async function (userData, emailSubject, emailBoday) {
-    console.log("userData>>>>>>>>>>>",userData);
-    console.log("userData>>>>>>>>>>",emailSubject);
-    console.log("userData>>>>>>>>>>>>",emailBoday);
+    
     //return false;
     // SEND EMAIL
     let transporter = nodemailer.createTransport({
@@ -15,7 +13,7 @@ exports.sendMail = async function (userData, emailSubject, emailBoday) {
         secure: true, 
         service: 'gmail',
         auth: {
-                user: 'developers.arkenea@gmail.com', 
+                user: 'developers2.arkenea@gmail.com', 
                 pass: 'gmail@123', 
         },
     });
@@ -44,8 +42,8 @@ exports.sendMail = async function (userData, emailSubject, emailBoday) {
         };
         var htmlToSend = template(replacements);
         var mailOptions = {
-            from: 'developers.arkenea@gmail.com',
-            to: "gopal.sharma475@gmail.com",
+            from: 'developers2.arkenea@gmail.com',
+            to: userData.email,
             subject: emailSubject,
             html: htmlToSend
         };

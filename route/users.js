@@ -360,11 +360,76 @@ exports.login = function (req, res) {
         var copy = cloneObjectByTemplate(userDetails, template);
         console.log("copy>>>>>>>>>>>",copy);	
         return res.status(200).send({ data: copy });
+    }); 
+}
+
+exports.forgotPassword =  async function (req, res) {
+    console.log("req.body>>>>>>>",req.body);
+    let email = req.body.email || '';
+    if (email == '') {
+        return res.status(404).send({'err' : 'Email Required.'});
+    }
+
+    User.findOne({"email":email}, async function (err, userDetails) {
+
+        if (err) {
+            console.log("err>>>>>>>>>>>>>>>>",err);
+            return res.status(401).send({'err' : 'There is something wrong...'});
+        }
+    
+        if (userDetails == undefined) {		
+            //return res.status(200).send({'err' : 'User Detail not found'});
+            return res.status(200).send({ 'err' : 'User Detail not found',data: "" });
+        }
+        console.log("userDetails>>>>>>>>>>>",userDetails);
+        var template = {
+            __v: true,
+            _id: function(src){
+                return src._id;
+            },
+            created_at: function(src){
+                        return src.created_at.toDateString();
+                    },
+            modified_at: function(src){
+                return src.modified_at.toDateString();
+            },  
+            first_name: false,
+            last_name: true,
+            email: true,
+            phoneno: true,
+            image: true,
+            dob: true,
+                list: function(src){
+                    return src.userDetails;
+                }, 
+    
+        }; 
+    
+        var copy = cloneObjectByTemplate(userDetails, template);
+
+        console.log("copy>>>>>>>>>",copy);
+        var userId = copy._id;
+        console.log("userId>>>>>>>>1233",userId);
+        var newPassword =  Math.floor(Math.random() * 100000);
+        var forgotPasswordBody = "Hi "+copy.first_name+", Please find updated password to login your account.";
+                forgotPasswordBody +=" password :- "+newPassword+""
+        commonFunction.sendMail(copy,"Forgot Password",forgotPasswordBody);
+        try {
+            console.log("newPassword>>>>>>>>>",newPassword);
+            const checkData = {};
+            var query = {'_id': userId};
+            checkData.password = newPassword;
+
+            User.findOneAndUpdate(query, checkData, {upsert: true}, function(err, doc) {
+                if (err) return res.send(500, {error: err});
+                console.log(">>>>>>>>>>>Success Update");
+            });
+        } catch(error){
+            console.log("newPassword>>>>>>>>>11",newPassword);
+            console.log(">>>>>>>>>>",error);
+        }
+        return res.status(200).send({ 'err' : 'Email has been with updated password.',data: copy });
     });
-
-
-
-    return false;
 }
 
 // Some Common finction 

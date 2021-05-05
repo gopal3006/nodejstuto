@@ -116,12 +116,13 @@ app.post('/api/v1/users/update', upload.single('uploadedImage'), routes.users.us
 app.post('/api/v1/users/detail', routes.users.detailUser);
 app.post('/api/v1/users/uploadImage', routes.users.uploadImage);
 app.post('/api/v1/users/login', routes.users.login);
+app.post('/api/v1/users/forgotPassword', routes.users.forgotPassword);
 
 app.use(function (req, res, next) {
 	var token = req.headers['x-access-token'];
 	console.log('token:', req.originalUrl);
 	console.log("req.originalUrl>>>>>>>>>",req.originalUrl);
-	if ((req.originalUrl != '/api/v1/constactus/save') && (req.originalUrl != '/dashboard') && (req.originalUrl != '/varification') && (req.originalUrl != '/api/v1/users/isemail') && (req.originalUrl != '/api/v1/users/delete') && (req.originalUrl != '/api/v1/users/delete')) {
+	if ((req.originalUrl != '/api/v1/constactus/save') && (req.originalUrl != '/dashboard') && (req.originalUrl != '/varification') && (req.originalUrl != '/api/v1/users/isemail') && (req.originalUrl != '/api/v1/users/delete') && (req.originalUrl != '/api/v1/users/delete') && (req.originalUrl != '/api/v1/users/forgotPassword')) {
 		if (token) {
 			jwt.verify(token, app.get('superSecret'), function (err, decoded) {
 				if (err) {
