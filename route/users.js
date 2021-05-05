@@ -337,7 +337,7 @@ exports.login = function (req, res) {
         var template = {
             __v: true,
             _id: function(src){
-                return encodeId(src._id);
+                return src._id;
             },
             created_at: function(src){
                         return src.created_at.toDateString();
