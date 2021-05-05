@@ -379,7 +379,7 @@ exports.forgotPassword =  async function (req, res) {
     
         if (userDetails == undefined) {		
             //return res.status(200).send({'err' : 'User Detail not found'});
-            return res.status(200).send({ 'success' : 'Please check your email id', data: "" });
+            return res.status(200).send({ 'err' : 'Please check your email id', data: "" });
         }
         console.log("userDetails>>>>>>>>>>>",userDetails);
         var template = {
