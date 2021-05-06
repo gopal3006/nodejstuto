@@ -435,6 +435,56 @@ exports.forgotPassword =  async function (req, res) {
     });
 }
 
+exports.resetPassword = async function (req, res) {
+    console.log("req.body>>>>>>>",req.body);
+    let password = req.body.password || '';
+    let confirm_password = req.body.confirm_password || '';
+
+    if (password == '') {
+        return res.status(200).send({'err' : 'Password Required.'});
+    }
+    if (confirm_password == '') {
+        return res.status(200).send({'err' : 'Confirm Password Required.'});
+    }
+
+    User.findOne({"_id":req.body._id}, async function (err, userDetails) {
+
+        if (err) {
+            console.log("err>>>>>>>>>>>>>>>>",err);
+            return res.status(200).send({'err' : 'There is something wrong...', data: "" });
+        }
+    
+        if (userDetails == undefined) {		
+            return res.status(200).send({ 'err' : 'User not found', data: "" });
+        }
+
+        if(password == confirm_password) {
+
+            try {
+                const checkData = {};
+                var query = {'_id': req.body._id};
+                checkData.password = confirm_password;
+    
+                User.findOneAndUpdate(query, checkData, {upsert: true}, function(err, doc) {
+                    if (err){
+                        return res.status(200).send({'err' : 'There is something wrong...', data: "" });
+                    } else {
+                        return res.status(200).send({ 'success' : 'New password has been updated successfully.',data: userDetails });
+                    } 
+                    
+                });
+            } catch(error){
+                console.log("error>>>>>>>>>>>",error);
+                return res.status(200).send({ 'err' : 'There is something wrong. Please check your email id',data: "" });
+            }
+                
+
+        } else {
+            return res.status(200).send({ 'err' : 'New password and Confirm password should be same', data: "" });
+        }
+    })
+}
+
 // Some Common finction 
 function encodeId(id) {
     var firsthalf = id.toString().substring(0,12);
