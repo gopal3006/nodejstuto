@@ -485,9 +485,9 @@ exports.resetPassword = async function (req, res) {
     })
 }
 
-exports.sendSMS = function (req, res) {
+exports.sendSMS = async function (req, res) {
     console.log(">>>>>>>>>>>>>>>","I M HERE");
-    //console.log("REQ>>>>",req.body.phoneno);
+    console.log("REQ>>>>",req.body.phoneno);
     //return false;
     //TEST
     //const accountSid = "AC1e1dbc8ae084496394718bb95e32baa2"; 
@@ -496,12 +496,15 @@ exports.sendSMS = function (req, res) {
     //TEST
     //const authToken = "d57a4ab1fa29d9b430e8c57ce5ea0774";
     //LIVE
-    const authToken = "926f2a79e3f8c73d4cd2d8a87ae10b2e";
+    const authToken = "ff665ec9d3f1a9c0ca7aea8138a8acf0";
     const client = require('twilio')(accountSid, authToken);
+    const OTP =  Math.floor(Math.random() * 10000);
+    console.log("OTP>>>>>>>>>>",OTP);
+    
 
-client.messages
+await client.messages
   .create({
-     body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+     body: 'Please find one time password to varified your mobile number. OTP :-'+OTP,
      from: '+18065133875',
      to: '+91'+req.body.phoneno
    })
