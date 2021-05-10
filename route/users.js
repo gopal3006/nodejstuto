@@ -488,7 +488,12 @@ exports.resetPassword = async function (req, res) {
 exports.sendSMS = async function (req, res) {
     console.log(">>>>>>>>>>>>>>>","I M HERE");
     console.log("REQ>>>>",req.body.phoneno);
-    //return false;
+    let phoneno = req.body.phoneno || '';
+
+    if (phoneno == '') {
+        return res.status(200).send({'err' : 'Phone number Required.',data: ""});
+    }
+
     //TEST
     //const accountSid = "AC1e1dbc8ae084496394718bb95e32baa2"; 
     //LIVE
@@ -500,7 +505,7 @@ exports.sendSMS = async function (req, res) {
     const client = require('twilio')(accountSid, authToken);
     const OTP =  Math.floor(Math.random() * 10000);
     console.log("OTP>>>>>>>>>>",OTP);
-    
+
 
 await client.messages
   .create({
@@ -512,7 +517,7 @@ await client.messages
       message => console.log(message.sid)
       
     ); 
-    return res.status(200).send({'success' : 'Please check your mobile where we send an OTP to verified.'});
+    return res.status(200).send({'success' : 'Please check your mobile where we send an OTP to verified.',data: message.sid });
     
 }
 
