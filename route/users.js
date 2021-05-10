@@ -485,6 +485,32 @@ exports.resetPassword = async function (req, res) {
     })
 }
 
+exports.sendSMS = function (req, res) {
+    console.log(">>>>>>>>>>>>>>>","I M HERE");
+    //TEST
+    //const accountSid = "AC1e1dbc8ae084496394718bb95e32baa2"; 
+    //LIVE
+    const accountSid = "AC5dc6143c7aabee10338268085a29b481";
+    //TEST
+    //const authToken = "d57a4ab1fa29d9b430e8c57ce5ea0774";
+    //LIVE
+    const authToken = "926f2a79e3f8c73d4cd2d8a87ae10b2e";
+    const client = require('twilio')(accountSid, authToken);
+
+client.messages
+  .create({
+     body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+     from: '+18065133875',
+     to: '+917837751331'
+   })
+  .then(
+      message => console.log(message.sid)
+      
+    ); 
+    return res.status(200).send({'success' : 'Please check your mobile where we send an OTP to verified.'});
+    
+}
+
 // Some Common finction 
 function encodeId(id) {
     var firsthalf = id.toString().substring(0,12);

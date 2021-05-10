@@ -118,6 +118,7 @@ app.post('/api/v1/users/uploadImage', routes.users.uploadImage);
 app.post('/api/v1/users/login', routes.users.login);
 app.post('/api/v1/users/forgotPassword', routes.users.forgotPassword);
 app.post('/api/v1/users/resetPassword', routes.users.resetPassword);
+app.post('/api/v1/users/sendSMS', routes.users.sendSMS);
 
 app.use(function (req, res, next) {
 	var token = req.headers['x-access-token'];
