@@ -487,6 +487,8 @@ exports.resetPassword = async function (req, res) {
 
 exports.sendSMS = function (req, res) {
     console.log(">>>>>>>>>>>>>>>","I M HERE");
+    //console.log("REQ>>>>",req.body.phoneno);
+    //return false;
     //TEST
     //const accountSid = "AC1e1dbc8ae084496394718bb95e32baa2"; 
     //LIVE
@@ -501,7 +503,7 @@ client.messages
   .create({
      body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
      from: '+18065133875',
-     to: '+917837751331'
+     to: '+91'+req.body.phoneno
    })
   .then(
       message => console.log(message.sid)
