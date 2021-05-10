@@ -517,7 +517,7 @@ await client.messages
       message => console.log(message.sid)
       
     ); 
-    return res.status(200).send({'success' : 'Please check your mobile where we send an OTP to verified.',data: message.sid });
+    return res.status(200).send({'success' : 'Please check your mobile where we have sent an OTP for mobile number varification.',data: {"id":"123"} });
     
 }
 
