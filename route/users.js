@@ -505,20 +505,60 @@ exports.sendSMS = async function (req, res) {
     const client = require('twilio')(accountSid, authToken);
     const OTP =  Math.floor(Math.random() * 10000);
     console.log("OTP>>>>>>>>>>",OTP);
+    const checkData = {};
+    var query = {'_id': req.body._id};
+    checkData.otp = OTP;
+    checkData.is_mobile_varified = false;
 
+    User.findOneAndUpdate(query, checkData, {upsert: true}, async function(err, doc) {
+        if (err){
+            return res.status(200).send({'err' : 'There is something wrong...', data: "" });
+        } else {
+            await client.messages
+            .create({
+                body: 'Please find one time password to varified your mobile number. OTP :-'+OTP,
+                from: '+18065133875',
+                to: '+91'+req.body.phoneno
+            })
+            .then(
+                message => console.log(message.sid)
+                
+                );
+            return res.status(200).send({'success' : 'Please check your mobile where we have sent an OTP for mobile number varification.',data: {"id":"123"} });
+        } 
+    });  
+}
 
-await client.messages
-  .create({
-     body: 'Please find one time password to varified your mobile number. OTP :-'+OTP,
-     from: '+18065133875',
-     to: '+91'+req.body.phoneno
-   })
-  .then(
-      message => console.log(message.sid)
-      
-    ); 
-    return res.status(200).send({'success' : 'Please check your mobile where we have sent an OTP for mobile number varification.',data: {"id":"123"} });
+exports.verifiedOTP = async function (req, res) {
+    User.findOne({"_id":req.body._id,"otp":req.body.otp}, async function (err, userDetails) {
+        if (err) {
+            console.log("err>>>>>>>>>>>>>>>>",err);
+            return res.status(200).send({'err' : 'There is something wrong...', data: "" });
+        }
     
+        if (userDetails == undefined) {		
+            return res.status(200).send({ 'err' : 'Please enter valid OTP.', data: "" });
+        }
+
+        try {
+            const checkData = {};
+            var query = {'_id': req.body._id};
+            checkData.otp = "";
+            checkData.is_mobile_varified = true;
+
+            User.findOneAndUpdate(query, checkData, {upsert: true}, function(err, doc) {
+                if (err){
+                    return res.status(200).send({'err' : 'There is something wrong...', data: "" });
+                } else {
+                    return res.status(200).send({ 'success' : 'Mobile number varified successfully.',data: userDetails });
+                } 
+                
+            });
+        } catch(error){
+            console.log("error>>>>>>>>>>>",error);
+            return res.status(200).send({ 'err' : 'There is something wrong. Please enter valid OTP.',data: "" });
+        }
+    })
 }
 
 // Some Common finction 

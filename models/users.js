@@ -9,6 +9,8 @@ var usersSchema = mongoose.Schema({
     email           :  { type: String },
     password        :   { type: String },
     phoneno         :   { type: String },
+    otp             :   { type: String },
+is_mobile_varified  :   { type: Boolean, default: false },
     image           :   { type: String },
     dob             :   { type: Date },
 	created_at      :   { type: Date, default: Date.now },  
