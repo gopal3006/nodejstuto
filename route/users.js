@@ -339,11 +339,16 @@ exports.login = async function (req, res) {
 
         const checkData = {};
         var query = {'_id': userDetails._id};
-        var UTCTIME = moment.utc().format();
+        //var UTCTIME = moment.utc().format();
+        var UTCTIME = new Date();
+        var timeZoneOffset = UTCTIME.getTimezoneOffset();
+        console.log("timeZoneOffset>>>>>>>.",timeZoneOffset);
         var timeZone = moment.tz.guess();
+        var timeZone = moment.tz.zone(timeZone).abbr(timeZoneOffset);
         console.log("UTCTIME>>>>>",UTCTIME); 
         checkData.last_login = UTCTIME;
         checkData.timezone = timeZone;
+        checkData.offset = timeZoneOffset;
 
         User.findOneAndUpdate(query, checkData, {upsert: true}, function(err, doc) {
             if (err){
@@ -373,6 +378,7 @@ exports.login = async function (req, res) {
             phoneno: true,
             image: true,
             dob: true,
+            offset: true,
             timezone: true,
                 list: function(src){
                     return src.userDetails;

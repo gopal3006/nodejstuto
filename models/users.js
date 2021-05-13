@@ -15,6 +15,7 @@ var usersSchema = mongoose.Schema({
     dob             :   { type: Date },
     last_login      :   { type: Date, default: new Date() },
     timezone        :   { type: String },
+    offset          :     { type: String },
 	created_at      :   { type: Date, default: Date.now },  
     modified_at     :   { type: Date, default: Date.now }
 });
