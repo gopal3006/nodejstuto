@@ -340,10 +340,12 @@ exports.login = async function (req, res) {
         const checkData = {};
         var query = {'_id': userDetails._id};
         var UTCTIME = moment.utc().format();
+        var timeZone = moment.tz.guess();
+        console.log("timeZone>>>>>>>>",timeZone);
         //var UTCTIME = new Date();
         //var timeZoneOffset = UTCTIME.getTimezoneOffset();
         //console.log("timeZoneOffset>>>>>>>.",timeZoneOffset);
-        var timeZone = moment.tz.guess();
+        
         //var timeZone = moment.tz.zone(timeZone).abbr(timeZoneOffset);
         console.log("UTCTIME>>>>>",UTCTIME); 
         checkData.last_login = UTCTIME;

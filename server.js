@@ -15,6 +15,18 @@ const multer = require('multer');
 var cors = require('cors');
 var fileExtension = require('file-extension');
 
+const moment = require('moment');
+const mtz  = require('moment-timezone');
+
+// FOR TESTING ONLY WILL REMOVE
+var UTCTIME = moment.utc().format();
+jun = moment(UTCTIME);
+var timeZone = moment.tz.guess();
+console.log("timeZone>>>>>>>>>",timeZone);
+console.log("USA TIME>>>>>",jun.tz(timeZone).format('h:mm:ss a'));
+console.log("UTC>>>>>>>>>>>>>",UTCTIME);
+console.log("OFFSET>>>>>",moment(UTCTIME).utcOffset(UTCTIME));
+
 //FILE UPLOAD USING MULTER
 // Configure Storage
 var storage = multer.diskStorage({
