@@ -13,7 +13,7 @@ require('dotenv').config();
 
 const multer = require('multer');
 var cors = require('cors');
-var fileExtension = require('file-extension')
+var fileExtension = require('file-extension');
 
 //FILE UPLOAD USING MULTER
 // Configure Storage

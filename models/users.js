@@ -10,9 +10,11 @@ var usersSchema = mongoose.Schema({
     password        :   { type: String },
     phoneno         :   { type: String },
     otp             :   { type: String },
-is_mobile_varified  :   { type: Boolean, default: false },
+    is_mobile_varified  :   { type: Boolean, default: false },
     image           :   { type: String },
     dob             :   { type: Date },
+    last_login      :   { type: Date, default: new Date() },
+    timezone        :   { type: String },
 	created_at      :   { type: Date, default: Date.now },  
     modified_at     :   { type: Date, default: Date.now }
 });

@@ -14,6 +14,8 @@ const bodyParser = require('body-parser');
 const mime = require('mime');
 const nodemailer = require("nodemailer");
 const commonFunction = require('./common_helper');
+const moment = require('moment');
+const mtz  = require('moment-timezone');
 
 exports.userSave = function (req, res) {
     var first_name = req.body.first_name || '';
@@ -310,7 +312,7 @@ exports.uploadImage = function(req, res) {
     return false;
 }
 
-exports.login = function (req, res) {
+exports.login = async function (req, res) {
     let email = req.body.email || '';
     let password = req.body.password || '';
     if (email == '') {
@@ -334,6 +336,23 @@ exports.login = function (req, res) {
         }
 
         console.log("userDetails>>>>>>>>>>>",userDetails);
+
+        const checkData = {};
+        var query = {'_id': userDetails._id};
+        var UTCTIME = moment.utc().format();
+        var timeZone = moment.tz.guess();
+        console.log("UTCTIME>>>>>",UTCTIME); 
+        checkData.last_login = UTCTIME;
+        checkData.timezone = timeZone;
+
+        User.findOneAndUpdate(query, checkData, {upsert: true}, function(err, doc) {
+            if (err){
+                console.log("err>>>>>>>>>>>>",err);
+            } else {
+                console.log("UPDATE>>>>>>>>>>>>");
+            }
+        });
+
         var template = {
             __v: true,
             _id: function(src){
@@ -342,6 +361,9 @@ exports.login = function (req, res) {
             created_at: function(src){
                         return src.created_at.toDateString();
                     },
+            last_login: function(src){
+                return src.last_login;
+            },
             modified_at: function(src){
                 return src.modified_at.toDateString();
             },  
@@ -351,12 +373,14 @@ exports.login = function (req, res) {
             phoneno: true,
             image: true,
             dob: true,
+            timezone: true,
                 list: function(src){
                     return src.userDetails;
                 }, 
     
         }; 
-    
+
+        
         var copy = cloneObjectByTemplate(userDetails, template);
         console.log("copy>>>>>>>>>>>",copy);	
         return res.status(200).send({ data: copy });
