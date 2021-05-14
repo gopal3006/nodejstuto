@@ -341,7 +341,9 @@ exports.login = async function (req, res) {
         var query = {'_id': userDetails._id};
         var UTCTIME = moment.utc().format();
         var timeZone = moment.tz.guess();
-        console.log("timeZone>>>>>>>>",timeZone);
+        
+        //console.log("Javascript Timezone>>>>>>",Intl.DateTimeFormat().resolvedOptions().timeZone);
+        //console.log("timeZone>>>>>>>>",timeZone);
         //var UTCTIME = new Date();
         //var timeZoneOffset = UTCTIME.getTimezoneOffset();
         //console.log("timeZoneOffset>>>>>>>.",timeZoneOffset);
@@ -352,46 +354,43 @@ exports.login = async function (req, res) {
         checkData.timezone = timeZone;
         //checkData.offset = timeZoneOffset;
 
-        User.findOneAndUpdate(query, checkData, {upsert: true}, function(err, doc) {
+        User.findOneAndUpdate(query, checkData, {upsert: true}, function(err, updatedUserData) {
             if (err){
-                console.log("err>>>>>>>>>>>>",err);
+                return res.status(200).send({'err' : 'There is something wrong...'});
             } else {
-                console.log("UPDATE>>>>>>>>>>>>");
+                //console.log("UPDATE>>>>>>>>>>>>",updatedUserData);
+                var template = {
+                    __v: true,
+                    _id: function(src){
+                        return src._id;
+                    },
+                    created_at: function(src){
+                                return src.created_at.toDateString();
+                            },
+                    last_login: function(src){
+                        return src.last_login;
+                    },
+                    modified_at: function(src){
+                        return src.modified_at.toDateString();
+                    },  
+                    first_name: false,
+                    last_name: true,
+                    email: true,
+                    phoneno: true,
+                    image: true,
+                    dob: true,
+                    offset: true,
+                    timezone: true,
+                        list: function(src){
+                            return src.updatedUserData;
+                        }, 
+            
+                }; 
+                var copy = cloneObjectByTemplate(updatedUserData, template);
+                console.log("copy>>>>>>>>>>>",copy);	
+                return res.status(200).send({ data: copy });
             }
         });
-
-        var template = {
-            __v: true,
-            _id: function(src){
-                return src._id;
-            },
-            created_at: function(src){
-                        return src.created_at.toDateString();
-                    },
-            last_login: function(src){
-                return src.last_login;
-            },
-            modified_at: function(src){
-                return src.modified_at.toDateString();
-            },  
-            first_name: false,
-            last_name: true,
-            email: true,
-            phoneno: true,
-            image: true,
-            dob: true,
-            offset: true,
-            timezone: true,
-                list: function(src){
-                    return src.userDetails;
-                }, 
-    
-        }; 
-
-        
-        var copy = cloneObjectByTemplate(userDetails, template);
-        console.log("copy>>>>>>>>>>>",copy);	
-        return res.status(200).send({ data: copy });
     }); 
 }
 
