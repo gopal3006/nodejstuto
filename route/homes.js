@@ -7,7 +7,6 @@ var gm = require('gm');
 
 // Helpers
 exports.dashboard = function (req, res) {
-    console.log("I M HERE>>>>>>>>>>>>>>.");
     res.render('Homes/dashboard', {});
     
 }

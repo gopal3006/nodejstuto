@@ -34,8 +34,6 @@ exports.userSave = function (req, res) {
     if (typeof file === "undefined") {
         var fileName = "";
     } else {
-        console.log("File>>>>>>>>>>",file);
-        console.log("FIleName>>>>>>",file.filename);
         var fileName = file.filename;
     }
     // Save base64ImageUrl
@@ -66,20 +64,16 @@ exports.userSave = function (req, res) {
             newUser.phoneno = phoneno;
             newUser.image = base64ImageName;
             newUser.dob = dob;
-            console.log("newUser>>>>>>>>>>",newUser);
             newUser.save(function (err, reply) {
-                console.log("AFTER SAVE>>>>>>>>>>");
                 if (err) {
                     return res.status(404).send({'err' : err});
                 }
-                console.log("reply>>>>>>>>.",reply);
                 var varificationBody = "Hi "+newUser.first_name+", Please click on following link to verified your account.";
                 varificationBody +=" Link :- https://nodejstutomean.herokuapp.com/varification/"+reply._id+""
                 commonFunction.sendMail(newUser,"Account Varification",varificationBody);
                 return res.status(200).send({ confirm : 'User has been saved successfully.' });
             });
         } catch (e) {
-            console.log("e>>>>>>>>>>>>>>>",e);
             return res.status(404).send({'err' : e});
         }
     }
@@ -87,19 +81,15 @@ exports.userSave = function (req, res) {
 
 exports.userUpdate = async function (req, res) {
     const { _id, first_name, last_name, email, phoneno, dob } = req.body;
-    //console.log("REQUEST>>>>>>>>>>>>",req.body);
     try {
         const checkData = await User.findOne({ _id });
         if (!checkData) {
             return res.status(404).send({ confirm : 'Record not exists with this.' });
         }
-        console.log("checkData>>>>>>>",checkData);
         const file = req.file;
         if (typeof file === "undefined") {
             var fileName = checkData.image;
         } else {
-            console.log("File>>>>>>>>>>",file);
-            console.log("FIleName>>>>>>",file.filename);
             var fileName = file.filename;
         }
 
@@ -117,15 +107,10 @@ exports.userUpdate = async function (req, res) {
             response.type = matches[1];
             response.data = new Buffer.from(matches[2], 'base64');
             let decodedImg = response;
-            console.log("decodedImg>>>>>>>>",decodedImg);
             let imageBuffer = decodedImg.data;
-            console.log("imageBuffer>>>>>",imageBuffer);
             let type = decodedImg.type;
-            console.log("type>>>>>>>>>",type);
             let extension = mime.getExtension(type);
             var base64ImageName = "image" + '-' + Date.now() + '.' + extension;
-            console.log("base64ImageName>>>>>>>>",base64ImageName);
-            console.log("fileName>>>>>>>>>",fileName);
             try {
             fs.writeFileSync("./public/userImages/" + base64ImageName, imageBuffer, 'utf8');
                 //return res.send({"status":"success"});
@@ -196,32 +181,25 @@ exports.userList = function (req, res) {
 
 
 exports.deleteUser = function(req, res) {
-    console.log("I M HERE>>>>>>");
-    console.log("req.body>>>>>>>>>>>>", req.body);
     //return false;
     var userId = req.body.userId || '';
     User.findOneAndDelete({ _id: userId }, function (err) {
         if (err) {
-            console.log("I M HERE IF>>>>>>>>");
             return res.status(404).send({'err' : err});
 
         } else {
-            console.log("I M HERE ELSE>>>>>>>>");
             return res.status(200).send({ confirm : 'User has been deleted successfully.' });
         }
     });
 }
 
 exports.detailUser = async function(req, res) {
-    console.log("I M HERE>>>>>>");
-    console.log("req.body>>>>>>>>>>>>", req.body);
+     
     //return false;
     var userId = req.body._id || '';
-    console.log("userId>>>>>>>>",userId);
     User.findOne({"_id":userId }, function (err, userDetails) {
 	
         if (err) {
-            console.log("err>>>>>>>>>>>>>>>>",err);
             return res.status(401).send({'err' : 'There is something wrong...'});
         }
     
@@ -254,7 +232,6 @@ exports.detailUser = async function(req, res) {
                 }; 
             
             var copy = cloneObjectByTemplate(userDetails, template);
-            console.log("copy>>>>>>>>>>>",copy);	
             return res.status(200).send({ data: copy });
         });
 }
@@ -326,7 +303,6 @@ exports.login = async function (req, res) {
     User.findOne({"email":email,"password":password}, function (err, userDetails) {
 
         if (err) {
-            console.log("err>>>>>>>>>>>>>>>>",err);
             return res.status(401).send({'err' : 'There is something wrong...'});
         }
     
@@ -334,9 +310,6 @@ exports.login = async function (req, res) {
             //return res.status(200).send({'err' : 'User Detail not found'});
             return res.status(200).send({ 'err' : 'User Detail not found',data: "" });
         }
-
-        console.log("userDetails>>>>>>>>>>>",userDetails);
-
         const checkData = {};
         var query = {'_id': userDetails._id};
         var UTCTIME = moment.utc().format();
@@ -532,7 +505,7 @@ exports.sendSMS = async function (req, res) {
     //TEST
     //const authToken = "d57a4ab1fa29d9b430e8c57ce5ea0774";
     //LIVE
-    const authToken = "ff665ec9d3f1a9c0ca7aea8138a8acf0";
+    const authToken = "2896ce6129b3deb529b79847e7056237";
     const client = require('twilio')(accountSid, authToken);
     const OTP =  Math.floor(Math.random() * 10000);
     console.log("OTP>>>>>>>>>>",OTP);

@@ -9,8 +9,6 @@ const nodemailer = require("nodemailer");
 const async = require("async");
 
 exports.contactSave = function (req, res) {
-    console.log("I M HERE>>>>>>");
-    console.log("req.body>>>>>>>>>>>>", req.body);
     //return false;
     var first_name = req.body.first_name || '';
     var last_name = req.body.last_name || '';
@@ -29,7 +27,6 @@ exports.contactSave = function (req, res) {
     newContact.subject = subject;
     newContact.message = message;
     newContact.save(function (err, reply) {
-        console.log("AFTER SAVE>>>>>>>>>>");
         if (err) {
             return res.status(404).send({'err' : err});
         }
